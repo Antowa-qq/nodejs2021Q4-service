@@ -1,4 +1,5 @@
 const { boards } = require('../../db');
+const taskService = require('../tasks/task.memory.repository');
 const Board = require('./board.model');
 
 const getAllBoards = async () => boards;
@@ -23,6 +24,8 @@ const updateBoard = async (id, updatedBoard) => {
 
 const deleteBoard = async (id) => {
   const board = boards.findIndex((b) => b.id === id);
+  const tasks = await taskService.getAllTasks(id);
+  tasks.forEach((t) => t.boardId === id && taskService.deleteTask(t.id));
   boards.splice(board, 1);
   return board;
 };

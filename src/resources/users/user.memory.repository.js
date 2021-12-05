@@ -1,4 +1,4 @@
-const { users } = require('../../db');
+const { users, tasks } = require('../../db');
 const User = require('./user.model');
 
 const getAllUsers = async () => users;
@@ -24,6 +24,11 @@ const updateUser = async (id, updatedUser) => {
 
 const deleteUser = async (id) => {
   const user = users.findIndex((u) => u.id === id);
+  tasks.forEach((t, index) => {
+    if (t.userId === id) {
+      tasks[index].userId = null;
+    }
+  });
   users.splice(user, 1);
   return user;
 };

@@ -58,7 +58,6 @@ const updateUserOpts = {
   schema: {
     body: {
       type: 'object',
-      required: ['name', 'login', 'password'],
       properties: {
         name: { type: 'string' },
         login: { type: 'string' },
@@ -88,10 +87,10 @@ const deleteUserOpts = {
 
 const userRoutes = (fastify, options, done) => {
   fastify.get('/users', getUsersOpts);
-  fastify.get('/users/:id', getUserByIdOpts);
+  fastify.get('/users/:userId', getUserByIdOpts);
   fastify.post('/users', postUserOpts);
-  fastify.put('/users/:id', updateUserOpts);
-  fastify.delete('/users/:id', deleteUserOpts);
+  fastify.put('/users/:userId', updateUserOpts);
+  fastify.delete('/users/:userId', deleteUserOpts);
   done();
 };
 
