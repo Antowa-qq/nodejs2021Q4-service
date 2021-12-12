@@ -1,3 +1,5 @@
+import { FastifyInstance } from 'fastify';
+
 const {
   getAllUsers,
   getUserById,
@@ -85,7 +87,11 @@ const deleteUserOpts = {
   handler: deleteUser,
 };
 
-const userRoutes = (fastify, options, done) => {
+const userRoutes = (
+  fastify: FastifyInstance,
+  options: string,
+  done: Function
+) => {
   fastify.get('/users', getUsersOpts);
   fastify.get('/users/:userId', getUserByIdOpts);
   fastify.post('/users', postUserOpts);
@@ -94,4 +100,4 @@ const userRoutes = (fastify, options, done) => {
   done();
 };
 
-module.exports = userRoutes;
+export default userRoutes;

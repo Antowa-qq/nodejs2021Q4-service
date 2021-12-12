@@ -1,12 +1,18 @@
+import {  FastifyRequest, FastifyReply } from 'fastify';
+
 const userService = require('./user.service');
 
-const getAllUsers = async (req, reply) => {
+interface userParams {
+  userId: string;
+}
+
+const getAllUsers = async (req: FastifyRequest, reply: FastifyReply) => {
   const users = await userService.getAllUsers();
   reply.send(users);
 };
 
-const getUserById = async (req, reply) => {
-  const { userId } = req.params;
+const getUserById = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { userId } = <userParams>req.params;
   const user = await userService.getUserById(userId);
   if (!user) {
     reply
@@ -16,20 +22,21 @@ const getUserById = async (req, reply) => {
   reply.send(user);
 };
 
-const createUser = async (req, reply) => {
+const createUser = async (req: FastifyRequest, reply: FastifyReply) => {
   const user = req.body;
   const newUser = await userService.createUser(user);
   reply.code(201).send(newUser);
 };
 
-const deleteUser = async (req, reply) => {
-  const { userId } = req.params;
+const deleteUser = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { userId } = <userParams>req.params;
   await userService.deleteUser(userId);
   reply.send({ message: `User with id = ${userId} was deleted successfully ` });
 };
 
-const updateUser = async (req, reply) => {
-  const { userId } = req.params;
+const updateUser = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { userId } = <userParams>req.params;
+  const data = req.body;
   const user = await userService.getUserById(userId);
   if (!user) {
     reply
@@ -37,16 +44,8 @@ const updateUser = async (req, reply) => {
       .send({ message: `Oops, user with id = ${userId} not found ` });
   }
 
-  const updatedUser = await userService.updateUser(userId, {
-    ...req.body,
-  });
+  const updatedUser = await userService.updateUser(userId, data);
   reply.send(updatedUser);
 };
 
-module.exports = {
-  getAllUsers,
-  getUserById,
-  createUser,
-  deleteUser,
-  updateUser,
-};
+export { getAllUsers, getUserById, createUser, deleteUser, updateUser };

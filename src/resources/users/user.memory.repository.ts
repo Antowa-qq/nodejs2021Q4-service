@@ -1,20 +1,21 @@
+import { User } from './user.model';
+
 const { users, tasks } = require('../../db');
-const User = require('./user.model');
 
 const getAllUsers = async () => users;
 
-const getUserById = async (id) => {
-  const user = users.find((u) => u.id === id);
+const getUserById = async (id: string) => {
+  const user = users.find((u: User) => u.id === id);
   return user;
 };
 
-const createUser = async (user) => {
+const createUser = async (user: User) => {
   const newUser = new User({ ...user });
   users.push(newUser);
   return newUser;
 };
 
-const updateUser = async (id, updatedUser) => {
+const updateUser = async (id: string, updatedUser: User) => {
   const user = await getUserById(id);
   user.name = updatedUser.name || user.name;
   user.login = updatedUser.login || user.login;
@@ -22,9 +23,9 @@ const updateUser = async (id, updatedUser) => {
   return user;
 };
 
-const deleteUser = async (id) => {
-  const user = users.findIndex((u) => u.id === id);
-  tasks.forEach((t, index) => {
+const deleteUser = async (id: string) => {
+  const user = users.findIndex((u: User) => u.id === id);
+  tasks.forEach((t: { userId: string }, index: string) => {
     if (t.userId === id) {
       tasks[index].userId = null;
     }
@@ -33,10 +34,4 @@ const deleteUser = async (id) => {
   return user;
 };
 
-module.exports = {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
-};
+export { getAllUsers, getUserById, createUser, updateUser, deleteUser };
