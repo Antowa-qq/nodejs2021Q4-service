@@ -18,13 +18,13 @@ const getBoardById = async (req: FastifyRequest, reply: FastifyReply) => {
       .code(404)
       .send({ message: `Oops, board with id = ${boardId} not found` });
   }
-  reply.code(200).send({ board});
+  reply.code(200).send(board);
 };
 
 const createBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   const board = req.body;
   const newBoard = await boardService.createBoard(board);
-  reply.code(201).send({ ...newBoard, id: 'undefined' });
+  reply.code(201).send(newBoard);
 };
 
 const deleteBoard = async (req: FastifyRequest, reply: FastifyReply) => {
