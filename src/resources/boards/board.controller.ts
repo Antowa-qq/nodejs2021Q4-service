@@ -1,54 +1,52 @@
+import { FastifyRequest, FastifyReply } from 'fastify';
+
 const boardService = require('./board.service');
 
-const getAllBoards = async (req, reply) => {
+interface boardsParams {
+  boardId: string;
+}
+const getAllBoards = async (req: FastifyRequest, reply: FastifyReply) => {
   const boards = await boardService.getAllBoards();
   reply.send(boards);
 };
 
-const getBoardById = async (req, reply) => {
-  const { boardId } = req.params;
+const getBoardById = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { boardId } = <boardsParams>req.params;
   const board = await boardService.getBoardById(boardId);
   if (!board) {
     reply
       .code(404)
       .send({ message: `Oops, board with id = ${boardId} not found` });
   }
-  reply.send(board);
+  reply.code(200).send({ board});
 };
 
-const createBoard = async (req, reply) => {
+const createBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   const board = req.body;
   const newBoard = await boardService.createBoard(board);
-  reply.code(201).send(newBoard);
+  reply.code(201).send({ ...newBoard, id: 'undefined' });
 };
 
-const deleteBoard = async (req, reply) => {
-  const { boardId } = req.params;
+const deleteBoard = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { boardId } = <boardsParams>req.params;
   await boardService.deleteBoard(boardId);
   reply.send({
     message: `Board with id = ${boardId} was deleted successfully `,
   });
 };
 
-const updateBoard = async (req, reply) => {
-  const { boardId } = req.params;
+const updateBoard = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { boardId } = <boardsParams>req.params;
   const board = await boardService.getBoardById(boardId);
+  const data = req.body;
   if (!board) {
     reply
       .code(404)
       .send({ message: `Oops, board with id = ${boardId} not found ` });
   }
 
-  const updatedBoard = await boardService.updateBoard(boardId, {
-    ...req.body,
-  });
+  const updatedBoard = await boardService.updateBoard(boardId, data);
   reply.send(updatedBoard);
 };
 
-module.exports = {
-  getAllBoards,
-  getBoardById,
-  createBoard,
-  deleteBoard,
-  updateBoard,
-};
+export { getAllBoards, getBoardById, createBoard, deleteBoard, updateBoard };

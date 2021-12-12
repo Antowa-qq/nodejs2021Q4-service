@@ -1,39 +1,65 @@
+import { Board } from './board.model';
+
 const { boards } = require('../../db');
 const taskService = require('../tasks/task.memory.repository');
-const Board = require('./board.model');
 
-const getAllBoards = async () => boards;
+/**
+ * Get all boards.
+ * @returns all boards
+ */
+const getAllBoards = (): Board[] => boards;
 
-const getBoardById = async (id) => {
-  const board = boards.find((b) => b.id === id);
+/**
+ * Get board by id.
+ * @param  id - board id
+ * @returns  board by id or undefined
+ */
+const getBoardById = async (id: string) => {
+  const board = boards.find((b: { id: string }) => b.id === id) || false;
   return board;
 };
 
-const createBoard = async (board) => {
-  const newBoard = new Board({ ...board });
-  boards.push(newBoard);
-  return newBoard;
+/**
+ * Create board.
+ * @param  board - board
+ * @returns  object board by id or undefined
+ */
+const createBoard = (board: Board): Board => {
+  // const newBoard = new Board(board);
+  boards.push(board);
+  return board;
 };
 
-const updateBoard = async (id, updatedBoard) => {
+/**
+ * Updates board by id.
+ * @param id - uuid board
+ * @param board - object board
+ * @returns object board or false
+ */
+const updateBoard = async (id: string, updatedBoard: Board) => {
   const board = await getBoardById(id);
-  board.title = updatedBoard.title || board.title;
-  board.columns = updatedBoard.columns || board.columns;
-  return board;
+  if (board) {
+    board.title = updatedBoard.title || board.title;
+    board.columns = updatedBoard.columns || board.columns;
+    return board;
+  }
+  return false;
 };
 
-const deleteBoard = async (id) => {
-  const board = boards.findIndex((b) => b.id === id);
-  const tasks = await taskService.getAllTasks(id);
-  tasks.forEach((t) => t.boardId === id && taskService.deleteTask(t.id));
+/**
+ * Removes board by id
+ * @param id - uuid of board
+ * @returns true if board was found or false if not
+ */
+const deleteBoard = (id: string) => {
+  const board = boards.findIndex((b: Board) => b.id === id);
+  const tasks = taskService.getAllTasks(id);
+  tasks.forEach(
+    (t: { boardId: string; id: string }) =>
+      t.boardId === id && taskService.deleteTask(t.id)
+  );
   boards.splice(board, 1);
   return board;
 };
 
-module.exports = {
-  getAllBoards,
-  getBoardById,
-  createBoard,
-  updateBoard,
-  deleteBoard,
-};
+export { getAllBoards, getBoardById, createBoard, updateBoard, deleteBoard };

@@ -1,3 +1,5 @@
+import { FastifyInstance } from 'fastify';
+
 const {
   createBoard,
   deleteBoard,
@@ -39,7 +41,11 @@ const getBoardsOpts = {
 const getBoardByIdOpts = {
   schema: {
     response: {
-      200: Board,
+      200: {
+        id: { type: 'string' },
+        title: { type: 'string' },
+        columns: { type: 'array' },
+      },
     },
   },
   handler: getBoardById,
@@ -56,7 +62,14 @@ const postUserOpts = {
       },
     },
     response: {
-      201: Board,
+      201: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          title: { type: 'string' },
+          columns: { type: 'array' },
+        },
+      },
     },
   },
   handler: createBoard,
@@ -93,7 +106,11 @@ const deleteBoardOpts = {
   handler: deleteBoard,
 };
 
-const boardRoutes = (fastify, options, done) => {
+const boardRoutes = (
+  fastify: FastifyInstance,
+  options: string,
+  done: Function
+) => {
   fastify.get('/boards', getBoardsOpts);
   fastify.get('/boards/:boardId', getBoardByIdOpts);
   fastify.post('/boards', postUserOpts);
@@ -102,4 +119,4 @@ const boardRoutes = (fastify, options, done) => {
   done();
 };
 
-module.exports = boardRoutes;
+export default boardRoutes;
