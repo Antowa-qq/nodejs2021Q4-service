@@ -46,6 +46,7 @@
     "tsdoc/syntax": "error",
     "@typescript-eslint/no-explicit-any": ["error"],
     "@typescript-eslint/no-var-requires": "off",
-    "@typescript-eslint/ban-types": "off"
+    "@typescript-eslint/ban-types": "off",
+    "import/no-unresolved": "off"
   }
 }
